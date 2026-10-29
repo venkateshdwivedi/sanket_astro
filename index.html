@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sanket — Vedic Astrology-Powered Relationship Companion</title>
+  <meta name="description" content="Understand conversations, get the right reply, and explore your compatibility — all powered by your birth chart." />
+  
+  <!-- Google Fonts: Playfair Display and Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN with configuration -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#C4704B',
+            'brand-hover': '#B2623F',
+            canvas: '#FAF8F5',
+            surface: '#FFFFFF',
+            'surface-subtle': '#F5F2EB',
+            heading: '#1A1A1A',
+            body: '#4A4A4A',
+            muted: '#736F6A',
+            line: '#E8E4DC',
+            'line-light': '#F0ECE5',
+            highlight: '#F1DDD4'
+          },
+          fontFamily: {
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #FAF8F5;
+        color: #1A1A1A;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+    }
+    ::selection {
+      background-color: #F1DDD4;
+      color: #1A1A1A;
+    }
+    /* Subtle focus outline consistent with the design system */
+    input:focus {
+      outline: none;
+      border-color: #C4704B !important;
+      box-shadow: 0 0 0 1px #C4704B !important;
+    }
+  </style>
+</head>
+<body class="bg-canvas text-body antialiased selection:bg-[#F1DDD4] selection:text-heading min-h-screen flex flex-col">
+
+  <!-- ========================================================================= -->
+  <!-- 1. STICKY HEADER                                                          -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 w-full z-40 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-line">
+    <div class="max-w-[1080px] mx-auto px-6 h-16 md:h-18 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a class="font-serif text-2xl font-semibold tracking-tight text-heading hover:opacity-90 transition-opacity" href="#">
+          Sanket
+        </a>
+      </div>
+      <nav class="hidden md:flex items-center gap-8 text-[14px] text-muted font-medium">
+        <a class="hover:text-heading transition-colors" href="#how-it-works">How it works</a>
+        <a class="hover:text-heading transition-colors" href="#modes">Modes</a>
+        <a class="hover:text-heading transition-colors" href="#features">Features</a>
+      </nav>
+      <div class="flex items-center gap-4">
+        <a class="text-[13px] font-medium px-4 py-2 rounded-md bg-brand hover:bg-brand-hover text-white transition-colors" href="#waitlist">
+          Join waitlist
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full flex-grow">
+    <!-- ========================================================================= -->
+    <!-- 2. HERO SECTION                                                           -->
+    <!-- ========================================================================= -->
+    <section class="max-w-[1080px] mx-auto px-6 pt-16 md:pt-24 pb-20 md:pb-28 flex flex-col items-center">
+      <!-- Small Pill/Tag -->
+      <div class="mb-6 inline-flex items-center px-3 py-1 rounded-full bg-surface border border-line text-[12px] font-medium text-muted">
+        Vedic intelligence for modern dating
+      </div>
+
+      <!-- Hero Headline -->
+      <div class="text-center max-w-2xl mb-6">
+        <h1 class="font-serif text-4xl sm:text-5xl md:text-[54px] md:leading-[1.15] font-semibold text-heading tracking-tight">
+          Your stars know what to say next
+        </h1>
+      </div>
+
+      <!-- Subtext -->
+      <p class="text-center max-w-xl text-[16px] md:text-[17px] leading-relaxed text-body mb-8">
+        Vedic astrology meets your DMs. Understand conversations, get the right reply, and explore your compatibility — all powered by your birth chart.
+      </p>
+
+      <!-- Waitlist Form (Hero) -->
+      <form id="hero-waitlist-form" class="w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3" onsubmit="handleWaitlistSubmit(event, 'hero')">
+        <input 
+          id="hero-email" 
+          class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors" 
+          placeholder="Enter your email address..." 
+          required 
+          type="email" 
+          autocomplete="email"
+        />
+        <button 
+          id="hero-submit-btn" 
+          class="h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" 
+          type="submit"
+        >
+          Join waitlist
+        </button>
+      </form>
+
+      <!-- Feedback Area (Hero) -->
+      <div id="hero-feedback-success" class="hidden text-[13px] text-brand mb-10 text-center font-medium">
+        Thank you. You're on the early access list.
+      </div>
+      <div id="hero-feedback-error" class="hidden text-[13px] text-red-600 mb-10 text-center font-medium">
+        Something went wrong. Please try again.
+      </div>
+      <div id="hero-spacer" class="mb-7"></div>
+
+      <!-- App Interface Mockup Card -->
+      <div class="w-full max-w-2xl bg-surface rounded-xl border border-line shadow-sm overflow-hidden text-left">
+        <!-- Top bar -->
+        <div class="px-5 py-3 border-b border-line bg-[#FAF8F5]/50 flex items-center justify-between text-[12px] text-muted">
+          <span>Active conversation</span>
+          <span>Birth chart connected</span>
+        </div>
+
+        <div class="p-6 md:p-8 flex flex-col gap-6">
+          <!-- Received Message Bubble -->
+          <div class="flex flex-col gap-1.5">
+            <span class="text-[12px] text-muted">Received message</span>
+            <div class="self-start max-w-[85%] bg-surface-subtle px-4 py-3 rounded-lg border border-line-light text-[14px] leading-normal text-heading">
+              “Haha maybe this weekend if I finish work early 👀”
+            </div>
+          </div>
+
+          <!-- Insight Card -->
+          <div class="bg-surface rounded-lg p-4 border border-line flex flex-col gap-1.5">
+            <span class="text-[12px] font-semibold text-heading">Rohini Nakshatra • Moon in Taurus</span>
+            <p class="text-[13px] text-body leading-relaxed">
+              Her message favors grounded, reassuring pacing over hasty pressure. The interest is clear, but she values calm composure.
+            </p>
+          </div>
+
+          <!-- Suggested Replies with Copy Buttons -->
+          <div class="flex flex-col gap-2.5">
+            <div class="text-[12px] text-muted">
+              Suggested replies
+            </div>
+
+            <!-- Option 1 -->
+            <div class="p-3.5 bg-surface hover:bg-surface-subtle/50 rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
+              <span class="text-[14px] text-heading">“Don't work too hard, save some energy for Saturday 😉”</span>
+              <button 
+                class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer" 
+                onclick="copyText(this, 'Don\'t work too hard, save some energy for Saturday 😉')" 
+                type="button"
+                aria-label="Copy first suggested reply"
+              >
+                Copy
+              </button>
+            </div>
+
+            <!-- Option 2 -->
+            <div class="p-3.5 bg-surface hover:bg-surface-subtle/50 rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
+              <span class="text-[14px] text-heading">“No pressure at all. Let me know when you wrap up and I'll pick the spot.”</span>
+              <button 
+                class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer" 
+                onclick="copyText(this, 'No pressure at all. Let me know when you wrap up and I\'ll pick the spot.')" 
+                type="button"
+                aria-label="Copy second suggested reply"
+              >
+                Copy
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 3. HOW IT WORKS                                                           -->
+    <!-- ========================================================================= -->
+    <section class="w-full border-t border-line py-20 md:py-24" id="how-it-works">
+      <div class="max-w-[1080px] mx-auto px-6">
+        <div class="max-w-xl mb-12">
+          <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
+            How it works
+          </h2>
+          <p class="text-[15px] text-muted">
+            From conversation confusion to clear astrological signals in seconds.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Step 01 -->
+          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">01</span>
+            <h3 class="text-[17px] font-semibold text-heading mb-2">Share your conversation</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Paste messages or upload a screenshot directly into the reader.
+            </p>
+          </div>
+
+          <!-- Step 02 -->
+          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">02</span>
+            <h3 class="text-[17px] font-semibold text-heading mb-2">Add birth details</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Enter dates of birth to activate Astro Mode.
+            </p>
+          </div>
+
+          <!-- Step 03 -->
+          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">03</span>
+            <h3 class="text-[17px] font-semibold text-heading mb-2">Get astrology-powered insights</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Receive conversation analysis and tailored reply suggestions shaped by Vedic astrology.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 4. TWO MODES                                                              -->
+    <!-- ========================================================================= -->
+    <section class="w-full border-t border-line py-20 md:py-24" id="modes">
+      <div class="max-w-[1080px] mx-auto px-6">
+        <div class="max-w-xl mb-12">
+          <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
+            Two ways to navigate your conversations
+          </h2>
+          <p class="text-[15px] text-muted">
+            Whether you know their full planetary chart or only their first message.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+          <!-- Astro Mode (7 columns) -->
+          <div class="lg:col-span-7 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="text-[12px] font-medium text-brand mb-3">Vedic Alignment</div>
+              <h3 class="font-serif text-2xl font-semibold text-heading mb-3">Astro Mode</h3>
+              <p class="text-[15px] text-body leading-relaxed">
+                When you know their birthday, Sanket reads the stars. Your Rashi, their Nakshatra, your planetary dynamic — all woven into every reply suggestion and conversation insight.
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-line-light text-[13px] text-muted">
+              Incorporates moon placement, planetary periods, and communication compatibility.
+            </div>
+          </div>
+
+          <!-- AI Mode (5 columns) -->
+          <div class="lg:col-span-5 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="text-[12px] font-medium text-muted mb-3">Context Analysis</div>
+              <h3 class="font-serif text-2xl font-semibold text-heading mb-3">AI Mode</h3>
+              <p class="text-[15px] text-body leading-relaxed">
+                Don't have their birth details yet? Sanket still helps. Get AI-powered conversation analysis and reply suggestions instantly.
+              </p>
+            </div>
+            <div class="mt-8 pt-6 border-t border-line-light text-[13px] text-muted">
+              Tone detection and conversational cadence without natal chart data.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 5. WHAT YOU GET                                                           -->
+    <!-- ========================================================================= -->
+    <section class="w-full border-t border-line py-20 md:py-24" id="features">
+      <div class="max-w-[1080px] mx-auto px-6">
+        <div class="max-w-xl mb-12">
+          <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
+            What you get
+          </h2>
+          <p class="text-[15px] text-muted">
+            A calm lens designed for the emotional cadence of contemporary dating.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Card 1 -->
+          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+            <h3 class="text-lg font-semibold text-heading mb-2">Conversation Reading</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Understand tone, interest signals, and what the messages really suggest without second-guessing every comma or delay.
+            </p>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+            <h3 class="text-lg font-semibold text-heading mb-2">Astro-Powered Replies</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Get reply suggestions shaped by your Vedic compatibility — not generic templates or pickup lines from Twitter.
+            </p>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+            <h3 class="text-lg font-semibold text-heading mb-2">Compatibility Snapshot</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              See your pairing's strengths, friction points, and best communication approach broken down by elemental harmony.
+            </p>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+            <h3 class="text-lg font-semibold text-heading mb-2">Made for You</h3>
+            <p class="text-[14px] text-body leading-relaxed">
+              Supports English and Hinglish. Built for how people actually date across modern metropolises.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 6. BOTTOM CTA + PREFERENCE CHIPS                                         -->
+    <!-- ========================================================================= -->
+    <section class="w-full border-t border-line py-20 md:py-28" id="waitlist">
+      <div class="max-w-[1080px] mx-auto px-6 flex flex-col items-center text-center">
+        <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-3">
+          Be among the first to try Sanket
+        </h2>
+        <p class="text-[15px] md:text-[16px] text-muted max-w-md mb-8">
+          Early access invites roll out weekly. Secure your spot on the private beta list.
+        </p>
+
+        <!-- Waitlist Form (Bottom) -->
+        <form id="bottom-waitlist-form" class="w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3" onsubmit="handleWaitlistSubmit(event, 'bottom')">
+          <input 
+            id="bottom-email" 
+            class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors" 
+            placeholder="Enter your email address..." 
+            required 
+            type="email" 
+            autocomplete="email"
+          />
+          <button 
+            id="bottom-submit-btn" 
+            class="h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" 
+            type="submit"
+          >
+            Join waitlist
+          </button>
+        </form>
+
+        <!-- Feedback Area (Bottom) -->
+        <div id="bottom-feedback-success" class="hidden text-[13px] text-brand mb-6 text-center font-medium">
+          Thank you. You're on the early access list.
+        </div>
+        <div id="bottom-feedback-error" class="hidden text-[13px] text-red-600 mb-6 text-center font-medium">
+          Something went wrong. Please try again.
+        </div>
+
+        <!-- Preference Chips -->
+        <div class="flex flex-col items-center gap-3 mt-4">
+          <span class="text-[12px] text-muted">What interests you most?</span>
+          <div class="flex flex-wrap items-center justify-center gap-2" id="preference-chips-container">
+            <button 
+              type="button" 
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
+              data-preference="Understanding conversations" 
+              onclick="togglePreference(this)"
+            >
+              Understanding conversations
+            </button>
+            <button 
+              type="button" 
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
+              data-preference="Reply suggestions" 
+              onclick="togglePreference(this)"
+            >
+              Reply suggestions
+            </button>
+            <button 
+              type="button" 
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-heading border border-heading font-medium transition-colors cursor-pointer select-none" 
+              data-preference="Vedic compatibility" 
+              onclick="togglePreference(this)"
+            >
+              Vedic compatibility
+            </button>
+            <button 
+              type="button" 
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
+              data-preference="Everything" 
+              onclick="togglePreference(this)"
+            >
+              Everything
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- 7. FOOTER                                                                 -->
+  <!-- ========================================================================= -->
+  <footer class="w-full border-t border-line bg-surface py-12">
+    <div class="max-w-[1080px] mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        <div>
+          <span class="font-serif text-xl font-semibold text-heading block mb-1">Sanket</span>
+          <p class="text-[13px] text-muted">Vedic astrology for modern relationships.</p>
+        </div>
+        <div class="flex items-center gap-6 text-[13px] text-muted">
+          <a class="hover:text-heading transition-colors" href="https://instagram.com" rel="noopener noreferrer" target="_blank">Instagram</a>
+          <a class="hover:text-heading transition-colors" href="https://twitter.com" rel="noopener noreferrer" target="_blank">Twitter</a>
+        </div>
+      </div>
+      <div class="pt-6 border-t border-line-light flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-muted">
+        <p class="max-w-xl">
+          Astrological insights are for personal reflection and entertainment. Sanket does not predict feelings or outcomes.
+        </p>
+        <div>
+          &copy; 2026 Sanket. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================= -->
+  <!-- SCRIPTS & CLIENT LOGIC                                                    -->
+  <!-- ========================================================================= -->
+  <script>
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyotlxnTOVb9tkKkQqzlaAMkqjn4T85HEYtWea2X-ZDQ_6wB9JHjzFd7-N7y2hQl1JE/exec';
+
+    // Clipboard copy with feedback
+    function copyText(buttonElement, textToCopy) {
+      if (!navigator.clipboard) {
+        // Fallback for non-secure contexts
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showCopied(buttonElement);
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+        }
+        document.body.removeChild(textarea);
+        return;
+      }
+
+      navigator.clipboard.writeText(textToCopy)
+        .then(() => showCopied(buttonElement))
+        .catch(err => {
+          console.error('Copy failed:', err);
+          showCopied(buttonElement);
+        });
+    }
+
+    function showCopied(btn) {
+      const originalText = btn.textContent;
+      btn.textContent = 'Copied';
+      setTimeout(() => {
+        btn.textContent = originalText;
+      }, 1800);
+    }
+
+    // Preference chips toggle
+    function togglePreference(button) {
+      const isSelected = button.classList.contains('border-heading');
+      if (isSelected) {
+        button.classList.remove('border-heading', 'text-heading', 'font-medium');
+        button.classList.add('border-line', 'text-body');
+      } else {
+        button.classList.remove('border-line', 'text-body');
+        button.classList.add('border-heading', 'text-heading', 'font-medium');
+      }
+    }
+
+    // Helper to get currently selected preferences
+    function getSelectedPreferences() {
+      const selectedButtons = document.querySelectorAll('#preference-chips-container .pref-chip.border-heading');
+      const preferences = Array.from(selectedButtons).map(btn => btn.dataset.preference || btn.textContent.trim());
+      return preferences.join(', ');
+    }
+
+    // Waitlist submission handler
+    async function handleWaitlistSubmit(event, formPrefix) {
+      event.preventDefault();
+
+      const form = event.target;
+      const emailInput = form.querySelector('input[type="email"]');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const successFeedback = document.getElementById(`${formPrefix}-feedback-success`);
+      const errorFeedback = document.getElementById(`${formPrefix}-feedback-error`);
+      const spacer = document.getElementById(`${formPrefix}-spacer`);
+
+      if (!emailInput || !emailInput.value.trim()) return;
+
+      const email = emailInput.value.trim();
+      const preferences = getSelectedPreferences();
+      const originalBtnText = submitBtn ? submitBtn.textContent : 'Join waitlist';
+
+      // Reset feedback states
+      if (successFeedback) successFeedback.classList.add('hidden');
+      if (errorFeedback) errorFeedback.classList.add('hidden');
+
+      // Set loading state
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Joining...';
+      }
+
+      try {
+        // Send payload as stringified JSON to the Google Apps Script Webhook
+        // mode: 'no-cors' ensures the browser doesn't trip on missing CORS response headers from Google Apps Script redirect
+        await fetch(WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({
+            email: email,
+            preferences: preferences
+          })
+        });
+
+        // Success state
+        emailInput.disabled = true;
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Joined';
+        }
+        if (spacer) spacer.classList.add('hidden');
+        if (successFeedback) {
+          successFeedback.classList.remove('hidden');
+        }
+
+        // Also sync the other form if present on page
+        const otherPrefix = formPrefix === 'hero' ? 'bottom' : 'hero';
+        const otherInput = document.getElementById(`${otherPrefix}-email`);
+        const otherBtn = document.getElementById(`${otherPrefix}-submit-btn`);
+        const otherSuccess = document.getElementById(`${otherPrefix}-feedback-success`);
+        const otherSpacer = document.getElementById(`${otherPrefix}-spacer`);
+        if (otherInput) {
+          otherInput.value = email;
+          otherInput.disabled = true;
+        }
+        if (otherBtn) {
+          otherBtn.disabled = true;
+          otherBtn.textContent = 'Joined';
+        }
+        if (otherSpacer) otherSpacer.classList.add('hidden');
+        if (otherSuccess) otherSuccess.classList.remove('hidden');
+
+      } catch (err) {
+        console.error('Waitlist submission error:', err);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalBtnText;
+        }
+        if (errorFeedback) {
+          errorFeedback.classList.remove('hidden');
+        }
+      }
+    }
+  </script>
+</body>
+</html>
