@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Sanket — Vedic Astrology-Powered Relationship Companion</title>
-  <meta name="description" content="Understand conversations, get the right reply, and explore your compatibility — all powered by your birth chart." />
-  
+  <meta name="description"
+    content="Understand conversations, get the right reply, and explore your compatibility — all powered by your birth chart." />
+
   <!-- Google Fonts: Playfair Display and Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
 
   <!-- Tailwind CSS CDN with configuration -->
   <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
@@ -42,7 +46,9 @@
 
   <style>
     @layer base {
-      html, body {
+
+      html,
+      body {
         margin: 0;
         padding: 0;
         background-color: #FAF8F5;
@@ -50,27 +56,519 @@
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       }
     }
+
     ::selection {
       background-color: #F1DDD4;
       color: #1A1A1A;
     }
+
     /* Subtle focus outline consistent with the design system */
     input:focus {
       outline: none;
       border-color: #C4704B !important;
       box-shadow: 0 0 0 1px #C4704B !important;
     }
+
+    /* =========================================================================
+       ANIMATIONS, TRANSITIONS & EFFECTS
+       All transitions use transform/opacity only (GPU-accelerated)
+       Respects prefers-reduced-motion throughout.
+    ========================================================================= */
+
+    /* 1. Twinkling Stars — three speeds */
+    @keyframes twinkle-1 {
+
+      0%,
+      100% {
+        opacity: 0.08;
+        transform: scale(0.8);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform: scale(1.2);
+      }
+    }
+
+    @keyframes twinkle-2 {
+
+      0%,
+      100% {
+        opacity: 0.12;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.55;
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes twinkle-3 {
+
+      0%,
+      100% {
+        opacity: 0.15;
+        transform: scale(0.9);
+      }
+
+      50% {
+        opacity: 0.65;
+        transform: scale(1.15);
+      }
+    }
+
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      will-change: opacity, transform;
+    }
+
+    /* Big accent stars — diamond shape with glow */
+    .star-accent {
+      position: absolute;
+      pointer-events: none;
+      width: 6px;
+      height: 6px;
+      background: rgba(196, 112, 75, 0.5);
+      border-radius: 50%;
+      box-shadow: 0 0 6px 2px rgba(196, 112, 75, 0.15);
+    }
+
+    @keyframes twinkle-accent {
+
+      0%,
+      100% {
+        opacity: 0.15;
+        transform: scale(0.6);
+      }
+
+      50% {
+        opacity: 0.85;
+        transform: scale(1.3);
+      }
+    }
+
+    /* Shooting star effect */
+    @keyframes shooting-star {
+      0% {
+        transform: translateX(0) translateY(0) rotate(-35deg);
+        opacity: 0;
+        width: 0;
+      }
+
+      5% {
+        opacity: 1;
+      }
+
+      15% {
+        width: 80px;
+      }
+
+      40% {
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: translateX(300px) translateY(200px) rotate(-35deg);
+        opacity: 0;
+        width: 0;
+      }
+    }
+
+    .shooting-star {
+      position: absolute;
+      height: 1.5px;
+      background: linear-gradient(90deg, rgba(196, 112, 75, 0.6), rgba(212, 168, 83, 0.3), transparent);
+      border-radius: 2px;
+      pointer-events: none;
+      opacity: 0;
+      will-change: transform, opacity;
+    }
+
+    /* 2. Warm Gradient Wash — stronger glow */
+    .hero-wash {
+      background:
+        radial-gradient(ellipse 600px 400px at 50% 25%, rgba(196, 112, 75, 0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 400px 300px at 30% 60%, rgba(212, 168, 83, 0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 400px 300px at 70% 50%, rgba(196, 112, 75, 0.04) 0%, transparent 60%);
+    }
+
+    /* Pulsing glow behind hero headline */
+    @keyframes hero-glow-pulse {
+
+      0%,
+      100% {
+        opacity: 0.4;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+      }
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 500px;
+      height: 200px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(196, 112, 75, 0.07) 0%, transparent 70%);
+      animation: hero-glow-pulse 6s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* 3. Scroll Reveal Animations — more dramatic */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Hero-specific entrance — scale up + fade */
+    .reveal-hero {
+      opacity: 0;
+      transform: translateY(32px) scale(0.97);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-hero.revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    /* 4. App Mockup Floating Effect — more visible bob */
+    @keyframes float-mockup {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+        box-shadow: 0 4px 20px rgba(26, 26, 26, 0.06);
+      }
+
+      50% {
+        transform: translateY(-10px);
+        box-shadow: 0 14px 40px rgba(26, 26, 26, 0.10);
+      }
+    }
+
+    .floating-card {
+      will-change: transform;
+      animation: float-mockup 5s ease-in-out infinite;
+    }
+
+    /* 5. Card Hover Effects — stronger lift + warm glow */
+    .hover-card {
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(196, 112, 75, 0.45) !important;
+      box-shadow: 0 8px 24px rgba(196, 112, 75, 0.08), 0 4px 12px rgba(26, 26, 26, 0.06) !important;
+    }
+
+    /* 6. CTA Button Effects + Shimmer + Glow Pulse */
+    .cta-btn {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, background-color 0.2s ease;
+    }
+
+    .cta-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 20px rgba(196, 112, 75, 0.35);
+    }
+
+    .cta-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(105deg,
+          transparent 20%,
+          rgba(255, 255, 255, 0.15) 50%,
+          transparent 80%);
+      animation: shimmer 3.5s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        left: -100%;
+      }
+
+      30% {
+        left: 120%;
+      }
+
+      100% {
+        left: 120%;
+      }
+    }
+
+    /* Subtle ambient glow pulse on CTA */
+    @keyframes cta-glow {
+
+      0%,
+      100% {
+        box-shadow: 0 2px 10px rgba(196, 112, 75, 0.15);
+      }
+
+      50% {
+        box-shadow: 0 4px 18px rgba(196, 112, 75, 0.30);
+      }
+    }
+
+    .cta-glow {
+      animation: cta-glow 3s ease-in-out infinite;
+    }
+
+    /* 7. Section Dividers with Star Dot */
+    .section-divider {
+      position: relative;
+      width: 100%;
+      border: none;
+      border-top: 1px solid #E8E4DC;
+      margin: 0;
+    }
+
+    .section-divider::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 10px;
+      line-height: 1;
+      color: rgba(196, 112, 75, 0.4);
+      background: #FAF8F5;
+      padding: 0 10px;
+    }
+
+    footer .section-divider::after {
+      background: #FFFFFF;
+    }
+
+    /* 8. Preference Chips Micro-Interaction */
+    .pref-chip {
+      transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pref-chip:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(26, 26, 26, 0.06);
+    }
+
+    @keyframes chip-bounce {
+      0% {
+        transform: scale(1);
+      }
+
+      25% {
+        transform: scale(0.92);
+      }
+
+      55% {
+        transform: scale(1.08);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .chip-bouncing {
+      animation: chip-bounce 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* Selected chip gets a warm highlight bg */
+    .pref-chip-selected {
+      background-color: #F8EFEA !important;
+      border-color: #C4704B !important;
+      color: #C4704B !important;
+    }
+
+    /* 9. Step numbers gentle count-up feel */
+    @keyframes step-pop {
+      0% {
+        transform: scale(0.7);
+        opacity: 0;
+      }
+
+      60% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .step-number {
+      display: inline-block;
+    }
+
+    .step-number.animate {
+      animation: step-pop 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* 10. Sticky Header Transition */
+    #site-header {
+      background-color: transparent;
+      border-bottom-color: transparent;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      transition: background-color 0.35s ease, border-color 0.35s ease, backdrop-filter 0.35s ease, -webkit-backdrop-filter 0.35s ease, box-shadow 0.35s ease;
+    }
+
+    #site-header.scrolled {
+      background-color: rgba(250, 248, 245, 0.92);
+      border-bottom-color: #E8E4DC;
+      backdrop-filter: blur(16px) saturate(1.2);
+      -webkit-backdrop-filter: blur(16px) saturate(1.2);
+      box-shadow: 0 1px 8px rgba(26, 26, 26, 0.04);
+    }
+
+    /* 11. Insight card subtle border glow */
+    @keyframes insight-border-glow {
+
+      0%,
+      100% {
+        border-color: #E8E4DC;
+      }
+
+      50% {
+        border-color: rgba(196, 112, 75, 0.3);
+      }
+    }
+
+    .insight-glow {
+      animation: insight-border-glow 4s ease-in-out infinite;
+    }
+
+    /* 12. Smooth gradient text accent for hero tagline */
+    .text-gradient {
+      background: linear-gradient(135deg, #C4704B 0%, #D4A853 50%, #C4704B 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 6s ease-in-out infinite;
+    }
+
+    @keyframes gradient-shift {
+
+      0%,
+      100% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+    }
+
+    /* 13. Parallax-like subtle star drift on scroll */
+    .parallax-stars {
+      transition: transform 0.1s linear;
+    }
+
+    /* Reduced Motion Handling */
+    @media (prefers-reduced-motion: reduce) {
+
+      .reveal,
+      .reveal-hero {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .star,
+      .star-accent {
+        animation: none !important;
+      }
+
+      .shooting-star {
+        display: none !important;
+      }
+
+      .floating-card {
+        animation: none !important;
+        will-change: auto !important;
+      }
+
+      .hover-card:hover {
+        transform: none !important;
+      }
+
+      .cta-btn:hover {
+        transform: none !important;
+      }
+
+      .cta-btn::after {
+        animation: none !important;
+        display: none !important;
+      }
+
+      .cta-glow {
+        animation: none !important;
+      }
+
+      .chip-bouncing {
+        animation: none !important;
+      }
+
+      .step-number.animate {
+        animation: none !important;
+        opacity: 1 !important;
+      }
+
+      .hero-glow {
+        animation: none !important;
+      }
+
+      .insight-glow {
+        animation: none !important;
+      }
+
+      .text-gradient {
+        animation: none !important;
+        -webkit-text-fill-color: #C4704B !important;
+      }
+
+      #site-header {
+        background-color: rgba(250, 248, 245, 0.92) !important;
+        border-bottom-color: #E8E4DC !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+      }
+    }
   </style>
 </head>
+
 <body class="bg-canvas text-body antialiased selection:bg-[#F1DDD4] selection:text-heading min-h-screen flex flex-col">
 
   <!-- ========================================================================= -->
   <!-- 1. STICKY HEADER                                                          -->
   <!-- ========================================================================= -->
-  <header class="sticky top-0 w-full z-40 bg-[#FAF8F5]/90 backdrop-blur-md border-b border-line">
+  <header id="site-header" class="sticky top-0 w-full z-40 border-b">
     <div class="max-w-[1080px] mx-auto px-6 h-16 md:h-18 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <a class="font-serif text-2xl font-semibold tracking-tight text-heading hover:opacity-90 transition-opacity" href="#">
+        <a class="font-serif text-2xl font-semibold tracking-tight text-heading hover:opacity-90 transition-opacity"
+          href="#">
           Sanket
         </a>
       </div>
@@ -80,7 +578,8 @@
         <a class="hover:text-heading transition-colors" href="#features">Features</a>
       </nav>
       <div class="flex items-center gap-4">
-        <a class="text-[13px] font-medium px-4 py-2 rounded-md bg-brand hover:bg-brand-hover text-white transition-colors" href="#waitlist">
+        <a class="cta-btn cta-glow text-[13px] font-medium px-4 py-2 rounded-md bg-brand hover:bg-brand-hover text-white transition-colors"
+          href="#waitlist">
           Join waitlist
         </a>
       </div>
@@ -91,107 +590,129 @@
     <!-- ========================================================================= -->
     <!-- 2. HERO SECTION                                                           -->
     <!-- ========================================================================= -->
-    <section class="max-w-[1080px] mx-auto px-6 pt-16 md:pt-24 pb-20 md:pb-28 flex flex-col items-center">
-      <!-- Small Pill/Tag -->
-      <div class="mb-6 inline-flex items-center px-3 py-1 rounded-full bg-surface border border-line text-[12px] font-medium text-muted">
-        Vedic intelligence for modern dating
+    <section
+      class="relative max-w-[1080px] mx-auto px-6 pt-16 md:pt-24 pb-20 md:pb-28 flex flex-col items-center overflow-hidden">
+      <!-- Warm Gradient Wash -->
+      <div class="hero-wash absolute inset-0 pointer-events-none z-0" aria-hidden="true"></div>
+
+      <!-- Twinkling Stars Background Container -->
+      <div id="hero-stars" class="parallax-stars absolute inset-0 pointer-events-none z-0 overflow-hidden"
+        aria-hidden="true"></div>
+
+      <!-- Shooting Stars Container -->
+      <div id="shooting-stars" class="absolute inset-0 pointer-events-none z-0 overflow-hidden" aria-hidden="true">
       </div>
 
-      <!-- Hero Headline -->
-      <div class="text-center max-w-2xl mb-6">
-        <h1 class="font-serif text-4xl sm:text-5xl md:text-[54px] md:leading-[1.15] font-semibold text-heading tracking-tight">
-          Your stars know what to say next
-        </h1>
-      </div>
-
-      <!-- Subtext -->
-      <p class="text-center max-w-xl text-[16px] md:text-[17px] leading-relaxed text-body mb-8">
-        Vedic astrology meets your DMs. Understand conversations, get the right reply, and explore your compatibility — all powered by your birth chart.
-      </p>
-
-      <!-- Waitlist Form (Hero) -->
-      <form id="hero-waitlist-form" class="w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3" onsubmit="handleWaitlistSubmit(event, 'hero')">
-        <input 
-          id="hero-email" 
-          class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors" 
-          placeholder="Enter your email address..." 
-          required 
-          type="email" 
-          autocomplete="email"
-        />
-        <button 
-          id="hero-submit-btn" 
-          class="h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" 
-          type="submit"
-        >
-          Join waitlist
-        </button>
-      </form>
-
-      <!-- Feedback Area (Hero) -->
-      <div id="hero-feedback-success" class="hidden text-[13px] text-brand mb-10 text-center font-medium">
-        Thank you. You're on the early access list.
-      </div>
-      <div id="hero-feedback-error" class="hidden text-[13px] text-red-600 mb-10 text-center font-medium">
-        Something went wrong. Please try again.
-      </div>
-      <div id="hero-spacer" class="mb-7"></div>
-
-      <!-- App Interface Mockup Card -->
-      <div class="w-full max-w-2xl bg-surface rounded-xl border border-line shadow-sm overflow-hidden text-left">
-        <!-- Top bar -->
-        <div class="px-5 py-3 border-b border-line bg-[#FAF8F5]/50 flex items-center justify-between text-[12px] text-muted">
-          <span>Active conversation</span>
-          <span>Birth chart connected</span>
+      <div class="relative z-10 w-full flex flex-col items-center">
+        <!-- Small Pill/Tag -->
+        <div
+          class="reveal-hero mb-6 inline-flex items-center px-3 py-1 rounded-full bg-surface border border-line text-[12px] font-medium text-muted">
+          <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand/60 mr-2"
+            style="animation: twinkle-1 2s ease-in-out infinite;"></span>
+          Vedic intelligence for modern dating
         </div>
 
-        <div class="p-6 md:p-8 flex flex-col gap-6">
-          <!-- Received Message Bubble -->
-          <div class="flex flex-col gap-1.5">
-            <span class="text-[12px] text-muted">Received message</span>
-            <div class="self-start max-w-[85%] bg-surface-subtle px-4 py-3 rounded-lg border border-line-light text-[14px] leading-normal text-heading">
-              “Haha maybe this weekend if I finish work early 👀”
-            </div>
+        <!-- Hero Headline -->
+        <div class="reveal-hero text-center max-w-2xl mb-6 relative">
+          <div class="hero-glow" aria-hidden="true"></div>
+          <h1
+            class="font-serif text-4xl sm:text-5xl md:text-[54px] md:leading-[1.15] font-semibold text-heading tracking-tight">
+            Your stars know <span class="text-gradient">what to say</span> next
+          </h1>
+        </div>
+
+        <!-- Subtext -->
+        <p class="reveal-hero text-center max-w-xl text-[16px] md:text-[17px] leading-relaxed text-body mb-8">
+          Vedic astrology meets your DMs. Understand conversations, get the right reply, and explore your compatibility
+          — all powered by your birth chart.
+        </p>
+
+        <!-- Waitlist Form (Hero) -->
+        <form id="hero-waitlist-form"
+          class="reveal-hero w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3"
+          onsubmit="handleWaitlistSubmit(event, 'hero')">
+          <input id="hero-email"
+            class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors"
+            placeholder="Enter your email address..." required type="email" autocomplete="email" />
+          <button id="hero-submit-btn"
+            class="cta-btn cta-glow h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            type="submit">
+            Join waitlist
+          </button>
+        </form>
+
+        <!-- Feedback Area (Hero) -->
+        <div id="hero-feedback-success" class="hidden text-[13px] text-brand mb-10 text-center font-medium">
+          Thank you. You're on the early access list.
+        </div>
+        <div id="hero-feedback-error" class="hidden text-[13px] text-red-600 mb-10 text-center font-medium">
+          Something went wrong. Please try again.
+        </div>
+        <div id="hero-spacer" class="mb-7"></div>
+
+        <!-- App Interface Mockup Card (Floating Effect) -->
+        <div id="hero-mockup"
+          class="reveal-hero floating-card w-full max-w-2xl bg-surface rounded-xl border border-line overflow-hidden text-left">
+          <!-- Top bar -->
+          <div
+            class="px-5 py-3 border-b border-line bg-[#FAF8F5]/50 flex items-center justify-between text-[12px] text-muted">
+            <span>Active conversation</span>
+            <span class="flex items-center gap-1.5">
+              <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-400"
+                style="animation: twinkle-2 2.5s ease-in-out infinite;"></span>
+              Birth chart connected
+            </span>
           </div>
 
-          <!-- Insight Card -->
-          <div class="bg-surface rounded-lg p-4 border border-line flex flex-col gap-1.5">
-            <span class="text-[12px] font-semibold text-heading">Rohini Nakshatra • Moon in Taurus</span>
-            <p class="text-[13px] text-body leading-relaxed">
-              Her message favors grounded, reassuring pacing over hasty pressure. The interest is clear, but she values calm composure.
-            </p>
-          </div>
-
-          <!-- Suggested Replies with Copy Buttons -->
-          <div class="flex flex-col gap-2.5">
-            <div class="text-[12px] text-muted">
-              Suggested replies
+          <div class="p-6 md:p-8 flex flex-col gap-6">
+            <!-- Received Message Bubble -->
+            <div class="flex flex-col gap-1.5">
+              <span class="text-[12px] text-muted">Received message</span>
+              <div
+                class="self-start max-w-[85%] bg-surface-subtle px-4 py-3 rounded-lg border border-line-light text-[14px] leading-normal text-heading">
+                "Haha maybe this weekend if I finish work early 👀"
+              </div>
             </div>
 
-            <!-- Option 1 -->
-            <div class="p-3.5 bg-surface hover:bg-surface-subtle/50 rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
-              <span class="text-[14px] text-heading">“Don't work too hard, save some energy for Saturday 😉”</span>
-              <button 
-                class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer" 
-                onclick="copyText(this, 'Don\'t work too hard, save some energy for Saturday 😉')" 
-                type="button"
-                aria-label="Copy first suggested reply"
-              >
-                Copy
-              </button>
+            <!-- Insight Card with glow -->
+            <div class="insight-glow bg-surface rounded-lg p-4 border border-line flex flex-col gap-1.5">
+              <span class="text-[12px] font-semibold text-heading">Rohini Nakshatra &bull; Moon in Taurus</span>
+              <p class="text-[13px] text-body leading-relaxed">
+                Her message favors grounded, reassuring pacing over hasty pressure. The interest is clear, but she
+                values calm composure.
+              </p>
             </div>
 
-            <!-- Option 2 -->
-            <div class="p-3.5 bg-surface hover:bg-surface-subtle/50 rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
-              <span class="text-[14px] text-heading">“No pressure at all. Let me know when you wrap up and I'll pick the spot.”</span>
-              <button 
-                class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer" 
-                onclick="copyText(this, 'No pressure at all. Let me know when you wrap up and I\'ll pick the spot.')" 
-                type="button"
-                aria-label="Copy second suggested reply"
-              >
-                Copy
-              </button>
+            <!-- Suggested Replies with Copy Buttons -->
+            <div class="flex flex-col gap-2.5">
+              <div class="text-[12px] text-muted">
+                Suggested replies
+              </div>
+
+              <!-- Option 1 -->
+              <div
+                class="hover-card p-3.5 bg-surface rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
+                <span class="text-[14px] text-heading">"Don't work too hard, save some energy for Saturday 😉"</span>
+                <button
+                  class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer"
+                  onclick="copyText(this, 'Don\'t work too hard, save some energy for Saturday 😉')" type="button"
+                  aria-label="Copy first suggested reply">
+                  Copy
+                </button>
+              </div>
+
+              <!-- Option 2 -->
+              <div
+                class="hover-card p-3.5 bg-surface rounded-lg border border-line flex items-center justify-between gap-4 transition-colors">
+                <span class="text-[14px] text-heading">"No pressure at all. Let me know when you wrap up and I'll pick
+                  the spot."</span>
+                <button
+                  class="copy-btn shrink-0 text-[12px] text-muted hover:text-heading px-2.5 py-1 rounded border border-line-light transition-colors cursor-pointer"
+                  onclick="copyText(this, 'No pressure at all. Let me know when you wrap up and I\'ll pick the spot.')"
+                  type="button" aria-label="Copy second suggested reply">
+                  Copy
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -201,9 +722,10 @@
     <!-- ========================================================================= -->
     <!-- 3. HOW IT WORKS                                                           -->
     <!-- ========================================================================= -->
-    <section class="w-full border-t border-line py-20 md:py-24" id="how-it-works">
+    <hr class="section-divider" aria-hidden="true" />
+    <section class="w-full py-20 md:py-24" id="how-it-works">
       <div class="max-w-[1080px] mx-auto px-6">
-        <div class="max-w-xl mb-12">
+        <div class="reveal max-w-xl mb-12">
           <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
             How it works
           </h2>
@@ -214,8 +736,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <!-- Step 01 -->
-          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
-            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">01</span>
+          <div class="reveal hover-card bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="step-number font-mono text-[13px] text-brand/70 mb-4 font-semibold">01</span>
             <h3 class="text-[17px] font-semibold text-heading mb-2">Share your conversation</h3>
             <p class="text-[14px] text-body leading-relaxed">
               Paste messages or upload a screenshot directly into the reader.
@@ -223,8 +745,8 @@
           </div>
 
           <!-- Step 02 -->
-          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
-            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">02</span>
+          <div class="reveal hover-card bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="step-number font-mono text-[13px] text-brand/70 mb-4 font-semibold">02</span>
             <h3 class="text-[17px] font-semibold text-heading mb-2">Add birth details</h3>
             <p class="text-[14px] text-body leading-relaxed">
               Enter dates of birth to activate Astro Mode.
@@ -232,8 +754,8 @@
           </div>
 
           <!-- Step 03 -->
-          <div class="bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
-            <span class="font-mono text-[13px] text-muted mb-4 font-semibold">03</span>
+          <div class="reveal hover-card bg-surface p-7 rounded-xl border border-line shadow-sm flex flex-col">
+            <span class="step-number font-mono text-[13px] text-brand/70 mb-4 font-semibold">03</span>
             <h3 class="text-[17px] font-semibold text-heading mb-2">Get astrology-powered insights</h3>
             <p class="text-[14px] text-body leading-relaxed">
               Receive conversation analysis and tailored reply suggestions shaped by Vedic astrology.
@@ -246,9 +768,10 @@
     <!-- ========================================================================= -->
     <!-- 4. TWO MODES                                                              -->
     <!-- ========================================================================= -->
-    <section class="w-full border-t border-line py-20 md:py-24" id="modes">
+    <hr class="section-divider" aria-hidden="true" />
+    <section class="w-full py-20 md:py-24" id="modes">
       <div class="max-w-[1080px] mx-auto px-6">
-        <div class="max-w-xl mb-12">
+        <div class="reveal max-w-xl mb-12">
           <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
             Two ways to navigate your conversations
           </h2>
@@ -259,12 +782,18 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
           <!-- Astro Mode (7 columns) -->
-          <div class="lg:col-span-7 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
+          <div
+            class="reveal hover-card lg:col-span-7 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
             <div>
-              <div class="text-[12px] font-medium text-brand mb-3">Vedic Alignment</div>
+              <div class="text-[12px] font-medium text-brand mb-3 flex items-center gap-2">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand"
+                  style="animation: twinkle-1 2s ease-in-out infinite;"></span>
+                Vedic Alignment
+              </div>
               <h3 class="font-serif text-2xl font-semibold text-heading mb-3">Astro Mode</h3>
               <p class="text-[15px] text-body leading-relaxed">
-                When you know their birthday, Sanket reads the stars. Your Rashi, their Nakshatra, your planetary dynamic — all woven into every reply suggestion and conversation insight.
+                When you know their birthday, Sanket reads the stars. Your Rashi, their Nakshatra, your planetary
+                dynamic — all woven into every reply suggestion and conversation insight.
               </p>
             </div>
             <div class="mt-8 pt-6 border-t border-line-light text-[13px] text-muted">
@@ -273,12 +802,14 @@
           </div>
 
           <!-- AI Mode (5 columns) -->
-          <div class="lg:col-span-5 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
+          <div
+            class="reveal hover-card lg:col-span-5 bg-surface rounded-xl p-8 border border-line shadow-sm flex flex-col justify-between">
             <div>
               <div class="text-[12px] font-medium text-muted mb-3">Context Analysis</div>
               <h3 class="font-serif text-2xl font-semibold text-heading mb-3">AI Mode</h3>
               <p class="text-[15px] text-body leading-relaxed">
-                Don't have their birth details yet? Sanket still helps. Get AI-powered conversation analysis and reply suggestions instantly.
+                Don't have their birth details yet? Sanket still helps. Get AI-powered conversation analysis and reply
+                suggestions instantly.
               </p>
             </div>
             <div class="mt-8 pt-6 border-t border-line-light text-[13px] text-muted">
@@ -292,9 +823,10 @@
     <!-- ========================================================================= -->
     <!-- 5. WHAT YOU GET                                                           -->
     <!-- ========================================================================= -->
-    <section class="w-full border-t border-line py-20 md:py-24" id="features">
+    <hr class="section-divider" aria-hidden="true" />
+    <section class="w-full py-20 md:py-24" id="features">
       <div class="max-w-[1080px] mx-auto px-6">
-        <div class="max-w-xl mb-12">
+        <div class="reveal max-w-xl mb-12">
           <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-2">
             What you get
           </h2>
@@ -305,31 +837,34 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Card 1 -->
-          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+          <div class="reveal hover-card bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
             <h3 class="text-lg font-semibold text-heading mb-2">Conversation Reading</h3>
             <p class="text-[14px] text-body leading-relaxed">
-              Understand tone, interest signals, and what the messages really suggest without second-guessing every comma or delay.
+              Understand tone, interest signals, and what the messages really suggest without second-guessing every
+              comma or delay.
             </p>
           </div>
 
           <!-- Card 2 -->
-          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+          <div class="reveal hover-card bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
             <h3 class="text-lg font-semibold text-heading mb-2">Astro-Powered Replies</h3>
             <p class="text-[14px] text-body leading-relaxed">
-              Get reply suggestions shaped by your Vedic compatibility — not generic templates or pickup lines from Twitter.
+              Get reply suggestions shaped by your Vedic compatibility — not generic templates or pickup lines from
+              Twitter.
             </p>
           </div>
 
           <!-- Card 3 -->
-          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+          <div class="reveal hover-card bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
             <h3 class="text-lg font-semibold text-heading mb-2">Compatibility Snapshot</h3>
             <p class="text-[14px] text-body leading-relaxed">
-              See your pairing's strengths, friction points, and best communication approach broken down by elemental harmony.
+              See your pairing's strengths, friction points, and best communication approach broken down by elemental
+              harmony.
             </p>
           </div>
 
           <!-- Card 4 -->
-          <div class="bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
+          <div class="reveal hover-card bg-surface p-8 rounded-xl border border-line shadow-sm flex flex-col">
             <h3 class="text-lg font-semibold text-heading mb-2">Made for You</h3>
             <p class="text-[14px] text-body leading-relaxed">
               Supports English and Hinglish. Built for how people actually date across modern metropolises.
@@ -342,30 +877,26 @@
     <!-- ========================================================================= -->
     <!-- 6. BOTTOM CTA + PREFERENCE CHIPS                                         -->
     <!-- ========================================================================= -->
-    <section class="w-full border-t border-line py-20 md:py-28" id="waitlist">
+    <hr class="section-divider" aria-hidden="true" />
+    <section class="w-full py-20 md:py-28" id="waitlist">
       <div class="max-w-[1080px] mx-auto px-6 flex flex-col items-center text-center">
-        <h2 class="font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-3">
+        <h2 class="reveal font-serif text-3xl md:text-4xl font-semibold text-heading tracking-tight mb-3">
           Be among the first to try Sanket
         </h2>
-        <p class="text-[15px] md:text-[16px] text-muted max-w-md mb-8">
+        <p class="reveal text-[15px] md:text-[16px] text-muted max-w-md mb-8">
           Early access invites roll out weekly. Secure your spot on the private beta list.
         </p>
 
         <!-- Waitlist Form (Bottom) -->
-        <form id="bottom-waitlist-form" class="w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3" onsubmit="handleWaitlistSubmit(event, 'bottom')">
-          <input 
-            id="bottom-email" 
-            class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors" 
-            placeholder="Enter your email address..." 
-            required 
-            type="email" 
-            autocomplete="email"
-          />
-          <button 
-            id="bottom-submit-btn" 
-            class="h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed" 
-            type="submit"
-          >
+        <form id="bottom-waitlist-form"
+          class="reveal w-full max-w-md flex flex-col sm:flex-row items-stretch gap-2.5 mb-3"
+          onsubmit="handleWaitlistSubmit(event, 'bottom')">
+          <input id="bottom-email"
+            class="w-full h-11 px-3.5 bg-surface text-heading placeholder:text-muted/70 text-[14px] rounded-md border border-line transition-colors"
+            placeholder="Enter your email address..." required type="email" autocomplete="email" />
+          <button id="bottom-submit-btn"
+            class="cta-btn cta-glow h-11 px-5 bg-brand hover:bg-brand-hover text-white text-[14px] font-medium rounded-md transition-colors shrink-0 whitespace-nowrap cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            type="submit">
             Join waitlist
           </button>
         </form>
@@ -379,39 +910,27 @@
         </div>
 
         <!-- Preference Chips -->
-        <div class="flex flex-col items-center gap-3 mt-4">
+        <div class="reveal flex flex-col items-center gap-3 mt-4">
           <span class="text-[12px] text-muted">What interests you most?</span>
           <div class="flex flex-wrap items-center justify-center gap-2" id="preference-chips-container">
-            <button 
-              type="button" 
-              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
-              data-preference="Understanding conversations" 
-              onclick="togglePreference(this)"
-            >
+            <button type="button"
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted cursor-pointer select-none"
+              data-preference="Understanding conversations" onclick="togglePreference(this)">
               Understanding conversations
             </button>
-            <button 
-              type="button" 
-              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
-              data-preference="Reply suggestions" 
-              onclick="togglePreference(this)"
-            >
+            <button type="button"
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted cursor-pointer select-none"
+              data-preference="Reply suggestions" onclick="togglePreference(this)">
               Reply suggestions
             </button>
-            <button 
-              type="button" 
-              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-heading border border-heading font-medium transition-colors cursor-pointer select-none" 
-              data-preference="Vedic compatibility" 
-              onclick="togglePreference(this)"
-            >
+            <button type="button"
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted cursor-pointer select-none pref-chip-selected font-medium"
+              data-preference="Vedic compatibility" onclick="togglePreference(this)">
               Vedic compatibility
             </button>
-            <button 
-              type="button" 
-              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted transition-colors cursor-pointer select-none" 
-              data-preference="Everything" 
-              onclick="togglePreference(this)"
-            >
+            <button type="button"
+              class="pref-chip px-3.5 py-1.5 rounded-full bg-surface text-[13px] text-body border border-line hover:border-muted cursor-pointer select-none"
+              data-preference="Everything" onclick="togglePreference(this)">
               Everything
             </button>
           </div>
@@ -431,13 +950,17 @@
           <p class="text-[13px] text-muted">Vedic astrology for modern relationships.</p>
         </div>
         <div class="flex items-center gap-6 text-[13px] text-muted">
-          <a class="hover:text-heading transition-colors" href="https://instagram.com" rel="noopener noreferrer" target="_blank">Instagram</a>
-          <a class="hover:text-heading transition-colors" href="https://twitter.com" rel="noopener noreferrer" target="_blank">Twitter</a>
+          <a class="hover:text-heading transition-colors" href="https://instagram.com" rel="noopener noreferrer"
+            target="_blank">Instagram</a>
+          <a class="hover:text-heading transition-colors" href="https://twitter.com" rel="noopener noreferrer"
+            target="_blank">Twitter</a>
         </div>
       </div>
-      <div class="pt-6 border-t border-line-light flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-muted">
+      <div
+        class="pt-6 border-t border-line-light flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-[12px] text-muted">
         <p class="max-w-xl">
-          Astrological insights are for personal reflection and entertainment. Sanket does not predict feelings or outcomes.
+          Astrological insights are for personal reflection and entertainment. Sanket does not predict feelings or
+          outcomes.
         </p>
         <div>
           &copy; 2026 Sanket. All rights reserved.
@@ -451,11 +974,172 @@
   <!-- ========================================================================= -->
   <script>
     const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyotlxnTOVb9tkKkQqzlaAMkqjn4T85HEYtWea2X-ZDQ_6wB9JHjzFd7-N7y2hQl1JE/exec';
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ─── 1. Twinkling Stars — more, bigger, with accent stars ───
+    (function injectStars() {
+      if (reduceMotion) return;
+      const container = document.getElementById('hero-stars');
+      if (!container) return;
+
+      const colors = [
+        'rgba(196, 112, 75, 0.35)',
+        'rgba(212, 168, 83, 0.25)',
+        'rgba(196, 112, 75, 0.20)',
+        'rgba(115, 111, 106, 0.18)'
+      ];
+      const anims = ['twinkle-1', 'twinkle-2', 'twinkle-3'];
+
+      // Regular twinkling dots (50 of them)
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        const size = (Math.random() * 3 + 2).toFixed(1);
+        const duration = (Math.random() * 4 + 2).toFixed(1);
+        const delay = (Math.random() * 5).toFixed(1);
+        star.className = 'star';
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.top = (Math.random() * 100).toFixed(1) + '%';
+        star.style.left = (Math.random() * 100).toFixed(1) + '%';
+        star.style.background = colors[i % colors.length];
+        star.style.animation = anims[i % anims.length] + ' ' + duration + 's ' + delay + 's ease-in-out infinite';
+        container.appendChild(star);
+      }
+
+      // 8 larger accent stars with glow
+      for (let i = 0; i < 8; i++) {
+        const star = document.createElement('div');
+        const duration = (Math.random() * 3 + 3).toFixed(1);
+        const delay = (Math.random() * 6).toFixed(1);
+        star.className = 'star-accent';
+        star.style.top = (Math.random() * 90 + 5).toFixed(1) + '%';
+        star.style.left = (Math.random() * 90 + 5).toFixed(1) + '%';
+        star.style.animation = 'twinkle-accent ' + duration + 's ' + delay + 's ease-in-out infinite';
+        container.appendChild(star);
+      }
+    })();
+
+    // ─── Shooting Stars — occasional streak across hero ───
+    (function initShootingStars() {
+      if (reduceMotion) return;
+      const container = document.getElementById('shooting-stars');
+      if (!container) return;
+
+      function createShootingStar() {
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
+        star.style.top = (Math.random() * 40) + '%';
+        star.style.left = (Math.random() * 60) + '%';
+        const duration = (Math.random() * 1.5 + 1).toFixed(1);
+        star.style.animation = 'shooting-star ' + duration + 's ease-out forwards';
+        container.appendChild(star);
+        star.addEventListener('animationend', () => star.remove());
+      }
+
+      // First one after 3-6s, then every 5-12s
+      setTimeout(createShootingStar, Math.random() * 3000 + 3000);
+      setInterval(() => {
+        if (Math.random() > 0.4) createShootingStar();
+      }, Math.random() * 7000 + 5000);
+    })();
+
+    // ─── 3. Scroll Reveal Animations ───
+    (function initScrollReveal() {
+      const revealElements = document.querySelectorAll('.reveal, .reveal-hero');
+      if (reduceMotion) {
+        revealElements.forEach(el => el.classList.add('revealed'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el = entry.target;
+          const parent = el.parentElement;
+
+          if (parent && parent.classList.contains('grid')) {
+            const siblings = Array.from(parent.querySelectorAll(':scope > .reveal:not(.revealed)'));
+            siblings.forEach((sib, index) => {
+              setTimeout(() => {
+                sib.classList.add('revealed');
+                // Animate step numbers inside
+                const stepNum = sib.querySelector('.step-number');
+                if (stepNum) stepNum.classList.add('animate');
+              }, index * 120);
+            });
+          } else {
+            el.classList.add('revealed');
+          }
+          observer.unobserve(el);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+      revealElements.forEach(el => observer.observe(el));
+    })();
+
+    // ─── Parallax-like star drift on scroll ───
+    (function initStarParallax() {
+      if (reduceMotion) return;
+      const starsContainer = document.getElementById('hero-stars');
+      if (!starsContainer) return;
+
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            const scrollY = window.scrollY;
+            if (scrollY < 800) {
+              starsContainer.style.transform = 'translateY(' + (scrollY * 0.15) + 'px)';
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+    })();
+
+    // ─── 10. Sticky Header Scroll Behavior ───
+    (function initHeaderScroll() {
+      const header = document.getElementById('site-header');
+      if (!header) return;
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          requestAnimationFrame(() => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, { passive: true });
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    })();
+
+    // ─── 8. Preference Chips Micro Interaction ───
+    function togglePreference(button) {
+      const isSelected = button.classList.contains('pref-chip-selected');
+      if (isSelected) {
+        button.classList.remove('pref-chip-selected', 'font-medium');
+      } else {
+        button.classList.add('pref-chip-selected', 'font-medium');
+      }
+
+      if (!reduceMotion) {
+        button.classList.add('chip-bouncing');
+        button.addEventListener('animationend', () => button.classList.remove('chip-bouncing'), { once: true });
+      }
+    }
+
+    // Helper to get currently selected preferences
+    function getSelectedPreferences() {
+      const selectedButtons = document.querySelectorAll('#preference-chips-container .pref-chip.pref-chip-selected');
+      const preferences = Array.from(selectedButtons).map(btn => btn.dataset.preference || btn.textContent.trim());
+      return preferences.join(', ');
+    }
 
     // Clipboard copy with feedback
     function copyText(buttonElement, textToCopy) {
       if (!navigator.clipboard) {
-        // Fallback for non-secure contexts
         const textarea = document.createElement('textarea');
         textarea.value = textToCopy;
         textarea.style.position = 'fixed';
@@ -483,31 +1167,14 @@
     function showCopied(btn) {
       const originalText = btn.textContent;
       btn.textContent = 'Copied';
+      btn.style.color = '#C4704B';
       setTimeout(() => {
         btn.textContent = originalText;
+        btn.style.color = '';
       }, 1800);
     }
 
-    // Preference chips toggle
-    function togglePreference(button) {
-      const isSelected = button.classList.contains('border-heading');
-      if (isSelected) {
-        button.classList.remove('border-heading', 'text-heading', 'font-medium');
-        button.classList.add('border-line', 'text-body');
-      } else {
-        button.classList.remove('border-line', 'text-body');
-        button.classList.add('border-heading', 'text-heading', 'font-medium');
-      }
-    }
-
-    // Helper to get currently selected preferences
-    function getSelectedPreferences() {
-      const selectedButtons = document.querySelectorAll('#preference-chips-container .pref-chip.border-heading');
-      const preferences = Array.from(selectedButtons).map(btn => btn.dataset.preference || btn.textContent.trim());
-      return preferences.join(', ');
-    }
-
-    // Waitlist submission handler
+    // ─── Waitlist submission handler ───
     async function handleWaitlistSubmit(event, formPrefix) {
       event.preventDefault();
 
@@ -535,8 +1202,6 @@
       }
 
       try {
-        // Send payload as stringified JSON to the Google Apps Script Webhook
-        // mode: 'no-cors' ensures the browser doesn't trip on missing CORS response headers from Google Apps Script redirect
         await fetch(WEBHOOK_URL, {
           method: 'POST',
           mode: 'no-cors',
@@ -553,14 +1218,15 @@
         emailInput.disabled = true;
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = 'Joined';
+          submitBtn.textContent = 'Joined ✓';
+          submitBtn.classList.remove('cta-glow');
         }
         if (spacer) spacer.classList.add('hidden');
         if (successFeedback) {
           successFeedback.classList.remove('hidden');
         }
 
-        // Also sync the other form if present on page
+        // Sync other form on page
         const otherPrefix = formPrefix === 'hero' ? 'bottom' : 'hero';
         const otherInput = document.getElementById(`${otherPrefix}-email`);
         const otherBtn = document.getElementById(`${otherPrefix}-submit-btn`);
@@ -572,7 +1238,8 @@
         }
         if (otherBtn) {
           otherBtn.disabled = true;
-          otherBtn.textContent = 'Joined';
+          otherBtn.textContent = 'Joined ✓';
+          otherBtn.classList.remove('cta-glow');
         }
         if (otherSpacer) otherSpacer.classList.add('hidden');
         if (otherSuccess) otherSuccess.classList.remove('hidden');
@@ -590,4 +1257,5 @@
     }
   </script>
 </body>
+
 </html>
